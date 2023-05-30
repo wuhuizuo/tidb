@@ -24,3 +24,7 @@ jobs:
       run: go test -covermode=atomic -coverprofile=coverage.out -v ./config/... ./metrics/...
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
+      with:
+        flags: unit,integration
+        verbose: true
+
