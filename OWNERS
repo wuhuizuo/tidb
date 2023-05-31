@@ -1,6 +1,39 @@
-# See the OWNERS docs at https://go.k8s.io/owners
+reviewers:
+  - Benjamin2037
+  - BornChanger
+  - ChenPeng2013
+  - Defined2014
+  - JmPotato
+  - LittleFall
+  - SeaRise
+  - Tjianke
+  - TonsnakeLin
+  - TszKitLo40
+  - aytrack
+  - bobotu
+  - fixdb
+  - fzzf678
+  - hi-rustin
+  - js00070
+  - lamxTyler
+  - lcwangchao
+  - longfangsong
+  - mengxin9014
+  - mornyx
+  - nolouch
+  - pingyu
+  - rleungx
+  - shihongzhi
+  - spongedu
+  - tangwz
+  - tsthght
+  - zhangjinpeng1987
+  - zhongzc
+  - zhuo-zhi
 approvers:
-  # tidb-maintainers:
+  - 3pointer
+  - XuHuaiyu
+  - YuJuncen
   - amyangfei
   - bb7133
   - breezewish
@@ -8,9 +41,13 @@ approvers:
   - cfzjywxk
   - coocood
   - disksing
+  - glorv
+  - guo-shaoge
   - jackysp
+  - joccau
   - kennytm
   - lance6716
+  - lonng
   - ngaut
   - qiuyesuifeng
   - qw4990
@@ -20,112 +57,63 @@ approvers:
   - tiancaiamao
   - winkyao
   - winoros
-  - XuHuaiyu
+  - wjhuang2016
   - zimulala
+  - zyguan
   - zz-jason
-  # tidb-committers:
-  - 3pointer
   - AilinKid
   - AndreMouche
-  - andylokandy
-  - b41sh
-  - Benjamin2037
-  - CbcWestwolf
-  - chrysan
+  - AndrewDi
   - Deardrops
   - Defined2014
-  - dveeden
-  - eurekaka
-  - glorv
-  - gozssky
-  - guo-shaoge
-  - hawkingrei
-  - lcwangchao
-  - Little-Wallace
-  - mjonss
-  - morgo
-  - MyonKeminta
-  - overvenus
-  - sticnarf
-  - windtalker
-  - wjhuang2016
-  - wshwsh12
-  - xhebox
-  - you06
-  - zanmato1984
-  - zyguan
-  # migration-maintainers:
-  - amyangfei
-  - kennytm
-  - lance6716
-  # migration-committers:
-  - 3AceShowHand
-  - 3pointer
-  - asddongmen
-  - CharlesCheung96
-  - csuzhangxc
-  - D3Hunter
-  - dsdashun
   - Ehco1996
-  - glorv
   - GMHDBJD
-  - gozssky
-  - hi-rustin
-  - hicqu
-  - IANTHEREAL
   - Leavrth
-  - lichunzhu
   - Little-Wallace
-  - niubell
-  - okJiang
-  - overvenus
-  - sdojjy
-  - suzaku
-  - YuJuncen
-reviewer:
-  # tidb-reviewers:
-  - aytrack
-  - Benjamin2037
-  - BornChanger
-  - CbcWestwolf
-  - Defined2014
+  - MyonKeminta
+  - Reminiscent
+  - SunRunAway
+  - Yisaer
+  - andylokandy
+  - b41sh
+  - cbcwestwolf
+  - chrysan
+  - crazycs520
+  - djshow832
   - dveeden
   - ekexium
-  - fixdb
+  - eurekaka
+  - francis0407
+  - fzhedu
+  - glorv
   - gozssky
-  - guo-shaoge
+  - hanfei1991
   - hawkingrei
-  - hi-rustin
-  - JmPotato
-  - js00070
+  - ichn-hu
+  - imtbkcat
+  - lcwangchao
+  - lichunzhu
+  - liuzix
+  - lysu
+  - lzmhhh123
   - mjonss
-  - mornyx
-  - nolouch
-  - pingyu
-  - rleungx
-  - SeaRise
-  - shihongzhi
+  - mmyj
+  - morgo
+  - nrc
+  - overvenus
+  - rebelice
+  - sticnarf
   - sylzd
-  - tangwz
   - time-and-fate
-  - TonsnakeLin
-  - TszKitLo40
+  - tisonkun
+  - windtalker
+  - wshwsh12
+  - xhebox
+  - xiongjiwei
   - xuyifangreeneyes
-  - YangKeao
-  - zhangjinpeng1987
-  - zhongzc
-  # migration-reviewers:
-  - 3AceShowHand
-  - asddongmen
-  - ben1009
-  - CharlesCheung96
-  - D3Hunter
-  - gozssky
-  - hicqu
-  - iamxy
-  - joccau
-  - niubell
-  - nongfushanquan
-  - okJiang
-  - sdojjy
-  - tiancaiamao
+  - yangkeao
+  - you06
+  - youjiali1995
+  - zhouqiang-cl
+  - zwj-coder
+  - zanmato1984
