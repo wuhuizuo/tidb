@@ -25,8 +25,8 @@ require (
 	github.com/cheggaaa/pb/v3 v3.0.8
 	github.com/cheynewallace/tabby v1.1.1
 	github.com/cloudfoundry/gosigar v1.3.6
-	github.com/cockroachdb/errors v1.8.1
-	github.com/cockroachdb/pebble v0.0.0-20220415182917-06c9d3be25b3
+	github.com/cockroachdb/errors v1.11.1
+	github.com/cockroachdb/pebble v0.0.0-20231013194213-bbbf3df1d265
 	github.com/coocood/freecache v1.2.1
 	github.com/coreos/go-semver v0.3.0
 	github.com/cznic/mathutil v0.0.0-20181122101859-297441e03548
@@ -143,7 +143,9 @@ require (
 )
 
 require (
+	github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 // indirect
 	github.com/dolthub/maphash v0.1.0 // indirect
+	github.com/getsentry/sentry-go v0.18.0 // indirect
 	github.com/jfcg/sixb v1.3.8 // indirect
 	github.com/ryszard/goskiplist v0.0.0-20150312221310-2dfbae5fcf46 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
@@ -174,8 +176,8 @@ require (
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chavacava/garif v0.0.0-20230519080132-4752330f72df // indirect
-	github.com/cockroachdb/logtags v0.0.0-20190617123548-eb05cc24525f // indirect
-	github.com/cockroachdb/redact v1.0.8 // indirect
+	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
+	github.com/cockroachdb/redact v1.1.5 // indirect
 	github.com/cockroachdb/sentry-go v0.6.1-cockroachdb.2 // indirect
 	github.com/coocood/bbloom v0.0.0-20190830030839-58deb6228d64 // indirect
 	github.com/coocood/rtutil v0.0.0-20190304133409-c84515f646f2 // indirect
