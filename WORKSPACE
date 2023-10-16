@@ -125,12 +125,12 @@ http_archive(
 
 http_archive(
     name = "rules_java",
-    sha256 = "f5a3e477e579231fca27bf202bb0e8fbe4fc6339d63b38ccb87c2760b533d1c3",
-    strip_prefix = "rules_java-981f06c3d2bd10225e85209904090eb7b5fb26bd",
+    sha256 = "ef2327a3d66c5722b01e92125a1e520b9698a601db550f62fa2d48755603d937",
+    strip_prefix = "rules_java-0cdcecb2ee3a1da92f95ba0af036f20fa4179fb5",
     urls = [
-        "http://bazel-cache.pingcap.net:8080/gomod/rules/rules_java/rules_java-981f06c3d2bd10225e85209904090eb7b5fb26bd.tar.gz",
-        "http://ats.apps.svc/bazelbuild/gomod/rules/rules_java/rules_java-981f06c3d2bd10225e85209904090eb7b5fb26bd.tar.gz",
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_java/archive/981f06c3d2bd10225e85209904090eb7b5fb26bd.tar.gz",
-        "https://github.com/bazelbuild/rules_java/archive/981f06c3d2bd10225e85209904090eb7b5fb26bd.tar.gz",
+        "http://bazel-cache.pingcap.net:8080/gomod/rules/rules_java/rules_java-0cdcecb2ee3a1da92f95ba0af036f20fa4179fb5.tar.gz",
+        "http://ats.apps.svc/bazelbuild/gomod/rules/rules_java/rules_java-0cdcecb2ee3a1da92f95ba0af036f20fa4179fb5.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_java/archive/0cdcecb2ee3a1da92f95ba0af036f20fa4179fb5.tar.gz",
+        "https://github.com/bazelbuild/rules_java/archive/0cdcecb2ee3a1da92f95ba0af036f20fa4179fb5.tar.gz",
     ],
 )
