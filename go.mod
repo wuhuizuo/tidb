@@ -31,7 +31,7 @@ require (
 	github.com/coreos/go-semver v0.3.0
 	github.com/cznic/mathutil v0.0.0-20181122101859-297441e03548
 	github.com/daixiang0/gci v0.11.0
-	github.com/danjacques/gofslock v0.0.0-20191023191349-0a45f885bc37
+	github.com/danjacques/gofslock v0.0.0-20230728142113-ae8f59f9e88b
 	github.com/dgraph-io/ristretto v0.1.1
 	github.com/dgryski/go-farm v0.0.0-20200201041132-a6ae2369ad13
 	github.com/docker/go-units v0.4.0
