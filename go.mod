@@ -5,8 +5,8 @@ go 1.21
 require (
 	cloud.google.com/go/storage v1.30.1
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.6.0
-	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.1.0
-	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.0.0
+	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.3.0
+	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.1.0
 	github.com/BurntSushi/toml v1.3.2
 	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/Jeffail/gabs/v2 v2.5.1
@@ -111,7 +111,7 @@ require (
 	github.com/vbauerster/mpb/v7 v7.5.3
 	github.com/wangjohn/quickselect v0.0.0-20161129230411-ed8402a42d5f
 	github.com/xitongsys/parquet-go v1.5.5-0.20201110004701-b09c49d6d457
-	github.com/xitongsys/parquet-go-source v0.0.0-20200817004010-026bad9b25d0
+	github.com/xitongsys/parquet-go-source v0.0.0-20230919034749-0b16411e6349
 	go.etcd.io/etcd/api/v3 v3.5.2
 	go.etcd.io/etcd/client/pkg/v3 v3.5.2
 	go.etcd.io/etcd/client/v3 v3.5.2
@@ -144,6 +144,7 @@ require (
 
 require (
 	github.com/dolthub/maphash v0.1.0 // indirect
+	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/jfcg/sixb v1.3.8 // indirect
 	github.com/ryszard/goskiplist v0.0.0-20150312221310-2dfbae5fcf46 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
@@ -159,7 +160,7 @@ require (
 	cloud.google.com/go/pubsub v1.30.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.3.0 // indirect
 	github.com/Azure/go-ntlmssp v0.0.0-20221128193559-754e69321358 // indirect
-	github.com/AzureAD/microsoft-authentication-library-for-go v0.5.1 // indirect
+	github.com/AzureAD/microsoft-authentication-library-for-go v1.0.0 // indirect
 	github.com/DataDog/zstd v1.4.5 // indirect
 	github.com/HdrHistogram/hdrhistogram-go v1.1.2 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
@@ -249,7 +250,7 @@ require (
 	github.com/petermattis/goid v0.0.0-20211229010228-4d14c490ee36 // indirect
 	github.com/pierrec/lz4 v2.6.1+incompatible // indirect
 	github.com/pingcap/goleveldb v0.0.0-20191226122134-f82aafb29989 // indirect
-	github.com/pkg/browser v0.0.0-20210115035449-ce105d075bb4 // indirect
+	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8 // indirect
 	github.com/pkg/xattr v0.4.9 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/power-devops/perfstat v0.0.0-20221212215047-62379fc7944b // indirect
