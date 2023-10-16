@@ -291,6 +291,8 @@ github.com/facebookgo/clock v0.0.0-20150410010913-600d898af40a/go.mod h1:7Ga40eg
 github.com/fasthttp-contrib/websocket v0.0.0-20160511215533-1f3b11f56072/go.mod h1:duJ4Jxv5lDcvg4QuQr0oowTf7dz4/CR8NtyCooz9HL8=
 github.com/fatanugraha/noloopclosure v0.1.1 h1:AhepjAikNpk50qTZoipHZqeZtnyKT/C2Tk5dGn7nC+A=
 github.com/fatanugraha/noloopclosure v0.1.1/go.mod h1:Mi9CiG5QvEgvPLtZLsTzjYwjIDnWAbo10r0BG7JpJII=
+github.com/fatanugraha/noloopclosure v0.1.2 h1:sMRE4DRsxlXhpX8JHVdMB3E+hgJyXqwOCu0LwpO3zUM=
+github.com/fatanugraha/noloopclosure v0.1.2/go.mod h1:Mi9CiG5QvEgvPLtZLsTzjYwjIDnWAbo10r0BG7JpJII=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
 github.com/fatih/color v1.10.0/go.mod h1:ELkj/draVOlAH/xkhN6mQ50Qd0MPOk5AAr3maGEBuJM=
 github.com/fatih/color v1.15.0 h1:kOqh6YHBtK8aywxGerMG2Eq3H6Qgoqeo13Bk2Mv/nBs=
