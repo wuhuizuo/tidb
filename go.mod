@@ -51,7 +51,7 @@ require (
 	github.com/golangci/misspell v0.4.0
 	github.com/golangci/prealloc v0.0.0-20180630174525-215b22d4de21
 	github.com/google/btree v1.1.2
-	github.com/google/pprof v0.0.0-20211122183932-1daafda22083
+	github.com/google/pprof v0.0.0-20230926050212-f7f687d19a98
 	github.com/google/skylark v0.0.0-20181101142754-a5f7082aabed
 	github.com/google/uuid v1.3.0
 	github.com/gordonklaus/ineffassign v0.0.0-20230610083614-0e73809eb601
