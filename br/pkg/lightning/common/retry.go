@@ -26,8 +26,8 @@ import (
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/pingcap/errors"
-	tmysql "github.com/pingcap/tidb/errno"
-	drivererr "github.com/pingcap/tidb/store/driver/error"
+	tmysql "github.com/pingcap/tidb/pkg/errno"
+	drivererr "github.com/pingcap/tidb/pkg/store/driver/error"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -70,6 +70,7 @@ func IsRetryableError(err error) bool {
 var retryableErrorIDs = map[errors.ErrorID]struct{}{
 	ErrKVEpochNotMatch.ID():  {},
 	ErrKVNotLeader.ID():      {},
+	ErrNoLeader.ID():         {},
 	ErrKVRegionNotFound.ID(): {},
 	// common.ErrKVServerIsBusy is a little duplication with tmysql.ErrTiKVServerBusy
 	// it's because the response of sst.ingest gives us a sst.IngestResponse which doesn't contain error code,

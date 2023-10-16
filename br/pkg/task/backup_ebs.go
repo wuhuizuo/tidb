@@ -26,13 +26,14 @@ import (
 	"github.com/pingcap/tidb/br/pkg/conn"
 	"github.com/pingcap/tidb/br/pkg/conn/util"
 	"github.com/pingcap/tidb/br/pkg/glue"
+	"github.com/pingcap/tidb/br/pkg/logutil"
 	"github.com/pingcap/tidb/br/pkg/metautil"
 	"github.com/pingcap/tidb/br/pkg/pdutil"
 	"github.com/pingcap/tidb/br/pkg/storage"
 	"github.com/pingcap/tidb/br/pkg/summary"
 	"github.com/pingcap/tidb/br/pkg/utils"
 	"github.com/pingcap/tidb/br/pkg/version"
-	"github.com/pingcap/tidb/util/mathutil"
+	"github.com/pingcap/tidb/pkg/util/mathutil"
 	"github.com/spf13/pflag"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
@@ -144,6 +145,16 @@ func RunBackupEBS(c context.Context, g glue.Glue, cfg *BackupConfig) error {
 		if e != nil {
 			return errors.Trace(err)
 		}
+		denyLightning := utils.NewSuspendImporting("backup_ebs_command", mgr.StoreManager)
+		_, err := denyLightning.DenyAllStores(ctx, utils.DefaultBRGCSafePointTTL)
+		if err != nil {
+			return errors.Annotate(err, "lightning from running")
+		}
+		go func() {
+			if err := denyLightning.Keeper(ctx, utils.DefaultBRGCSafePointTTL); err != nil {
+				log.Warn("cannot keep deny importing, the backup archive may not be useable if there were importing.", logutil.ShortError(err))
+			}
+		}()
 		defer func() {
 			if ctx.Err() != nil {
 				log.Warn("context canceled, doing clean work with background context")
@@ -154,6 +165,13 @@ func RunBackupEBS(c context.Context, g glue.Glue, cfg *BackupConfig) error {
 			}
 			if restoreE := restoreFunc(ctx); restoreE != nil {
 				log.Warn("failed to restore removed schedulers, you may need to restore them manually", zap.Error(restoreE))
+			}
+			res, err := denyLightning.AllowAllStores(ctx)
+			if err != nil {
+				log.Warn("failed to restore importing, you may need to wait until you are able to start importing", zap.Duration("wait_for", utils.DefaultBRGCSafePointTTL))
+			}
+			if err := denyLightning.ConsistentWithPrev(res); err != nil {
+				log.Warn("lightning hasn't been denied, the backup archive may not be usable.", logutil.ShortError(err))
 			}
 		}()
 	}
@@ -216,6 +234,19 @@ func RunBackupEBS(c context.Context, g glue.Glue, cfg *BackupConfig) error {
 			return errors.Trace(err)
 		}
 
+		// Step.3 save backup meta file to s3.
+		// NOTE: maybe define the meta file in kvproto in the future.
+		// but for now json is enough.
+		backupInfo.SetClusterVersion(normalizedVer.String())
+		backupInfo.SetFullBackupType(string(cfg.FullBackupType))
+		backupInfo.SetResolvedTS(resolvedTs)
+		backupInfo.SetSnapshotIDs(snapIDMap)
+		backupInfo.SetVolumeAZs(volAZs)
+		err = saveMetaFile(c, backupInfo, client.GetStorage())
+		if err != nil {
+			return err
+		}
+
 		if !cfg.SkipPauseGCAndScheduler {
 			log.Info("snapshot started, restore schedule")
 			if restoreE := restoreFunc(ctx); restoreE != nil {
@@ -247,18 +278,6 @@ func RunBackupEBS(c context.Context, g glue.Glue, cfg *BackupConfig) error {
 	}
 	progress.Close()
 
-	// Step.3 save backup meta file to s3.
-	// NOTE: maybe define the meta file in kvproto in the future.
-	// but for now json is enough.
-	backupInfo.SetClusterVersion(normalizedVer.String())
-	backupInfo.SetFullBackupType(string(cfg.FullBackupType))
-	backupInfo.SetResolvedTS(resolvedTs)
-	backupInfo.SetSnapshotIDs(snapIDMap)
-	backupInfo.SetVolumeAZs(volAZs)
-	err = saveMetaFile(c, backupInfo, client.GetStorage())
-	if err != nil {
-		return err
-	}
 	finished = true
 	return nil
 }
@@ -294,13 +313,13 @@ func waitAllScheduleStoppedAndNoRegionHole(ctx context.Context, cfg Config, mgr 
 			} else {
 				log.Warn("failed to wait schedule, will retry later", zap.Error(err2))
 			}
-			continue
-		}
+		} else {
+			log.Info("all leader regions got, start checking hole", zap.Int("len", len(allRegions)))
 
-		log.Info("all leader regions got, start checking hole", zap.Int("len", len(allRegions)))
-
-		if !isRegionsHasHole(allRegions) {
-			return nil
+			if !isRegionsHasHole(allRegions) {
+				return nil
+			}
+			log.Info("Regions has hole, needs sleep and retry")
 		}
 		time.Sleep(backoffer.ExponentialBackoff())
 	}

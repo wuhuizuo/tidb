@@ -19,6 +19,7 @@ import (
 	"context"
 	"io"
 	"regexp"
+	"slices"
 	"strings"
 
 	"github.com/pingcap/errors"
@@ -26,10 +27,9 @@ import (
 	"github.com/pingcap/tidb/br/pkg/lightning/log"
 	"github.com/pingcap/tidb/br/pkg/lightning/metric"
 	"github.com/pingcap/tidb/br/pkg/lightning/worker"
-	tidbconfig "github.com/pingcap/tidb/config"
-	"github.com/pingcap/tidb/types"
-	"github.com/pingcap/tidb/util/mathutil"
-	"golang.org/x/exp/slices"
+	tidbconfig "github.com/pingcap/tidb/pkg/config"
+	"github.com/pingcap/tidb/pkg/types"
+	"github.com/pingcap/tidb/pkg/util/mathutil"
 )
 
 var (

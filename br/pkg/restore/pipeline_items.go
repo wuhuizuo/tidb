@@ -16,7 +16,7 @@ import (
 	"github.com/pingcap/tidb/br/pkg/rtree"
 	"github.com/pingcap/tidb/br/pkg/summary"
 	"github.com/pingcap/tidb/br/pkg/utils"
-	"github.com/pingcap/tidb/parser/model"
+	"github.com/pingcap/tidb/pkg/parser/model"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
@@ -151,6 +151,10 @@ type CreatedTable struct {
 	RewriteRule *RewriteRules
 	Table       *model.TableInfo
 	OldTable    *metautil.Table
+}
+
+func DefaultOutputTableChan() chan *CreatedTable {
+	return make(chan *CreatedTable, defaultChannelSize)
 }
 
 // TableWithRange is a CreatedTable that has been bind to some of key ranges.

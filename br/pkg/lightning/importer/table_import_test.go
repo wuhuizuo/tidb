@@ -31,7 +31,6 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/docker/go-units"
-	"github.com/golang/mock/gomock"
 	"github.com/google/uuid"
 	"github.com/pingcap/errors"
 	"github.com/pingcap/failpoint"
@@ -56,19 +55,22 @@ import (
 	"github.com/pingcap/tidb/br/pkg/lightning/worker"
 	"github.com/pingcap/tidb/br/pkg/mock"
 	"github.com/pingcap/tidb/br/pkg/storage"
-	"github.com/pingcap/tidb/ddl"
-	"github.com/pingcap/tidb/parser"
-	"github.com/pingcap/tidb/parser/ast"
-	"github.com/pingcap/tidb/parser/model"
-	"github.com/pingcap/tidb/parser/mysql"
-	"github.com/pingcap/tidb/store/pdtypes"
-	"github.com/pingcap/tidb/table/tables"
-	"github.com/pingcap/tidb/types"
-	tmock "github.com/pingcap/tidb/util/mock"
-	"github.com/pingcap/tidb/util/promutil"
-	filter "github.com/pingcap/tidb/util/table-filter"
+	"github.com/pingcap/tidb/pkg/ddl"
+	"github.com/pingcap/tidb/pkg/parser"
+	"github.com/pingcap/tidb/pkg/parser/ast"
+	"github.com/pingcap/tidb/pkg/parser/model"
+	"github.com/pingcap/tidb/pkg/parser/mysql"
+	"github.com/pingcap/tidb/pkg/store/pdtypes"
+	"github.com/pingcap/tidb/pkg/table/tables"
+	"github.com/pingcap/tidb/pkg/types"
+	tmock "github.com/pingcap/tidb/pkg/util/mock"
+	"github.com/pingcap/tidb/pkg/util/promutil"
+	filter "github.com/pingcap/tidb/pkg/util/table-filter"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+	"github.com/tikv/client-go/v2/testutils"
+	pd "github.com/tikv/pd/client"
+	"go.uber.org/mock/gomock"
 )
 
 const (
@@ -802,6 +804,7 @@ func (s *tableRestoreSuite) TestCompareChecksumSuccess() {
 		WithArgs("10m").
 		WillReturnResult(sqlmock.NewResult(2, 1))
 	mock.ExpectClose()
+	mock.ExpectClose()
 
 	ctx := MockDoChecksumCtx(db)
 	remoteChecksum, err := DoChecksum(ctx, s.tr.tableInfo)
@@ -832,7 +835,7 @@ func (s *tableRestoreSuite) TestCompareChecksumFailure() {
 		WithArgs("10m").
 		WillReturnResult(sqlmock.NewResult(2, 1))
 	mock.ExpectClose()
-
+	mock.ExpectClose()
 	ctx := MockDoChecksumCtx(db)
 	remoteChecksum, err := DoChecksum(ctx, s.tr.tableInfo)
 	require.NoError(s.T(), err)
@@ -935,7 +938,7 @@ func (s *tableRestoreSuite) TestTableRestoreMetrics() {
 	engineFinishedBase := metric.ReadCounter(metrics.ProcessedEngineCounter.WithLabelValues("imported", metric.TableResultSuccess))
 	tableFinishedBase := metric.ReadCounter(metrics.TableCounter.WithLabelValues("index_imported", metric.TableResultSuccess))
 
-	ctx := metric.NewContext(context.Background(), metrics)
+	ctx := metric.WithMetric(context.Background(), metrics)
 	chptCh := make(chan saveCp)
 	defer close(chptCh)
 	cfg := config.NewConfig()
@@ -1160,6 +1163,8 @@ func (s *tableRestoreSuite) TestCheckClusterResource() {
 	require.NoError(s.T(), err)
 	mockStore, err := storage.NewLocalStorage(dir)
 	require.NoError(s.T(), err)
+	_, _, pdClient, err := testutils.NewMockTiKV("", nil)
+	require.NoError(s.T(), err)
 	for _, ca := range cases {
 		server := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			var err error
@@ -1176,16 +1181,18 @@ func (s *tableRestoreSuite) TestCheckClusterResource() {
 
 		url := strings.TrimPrefix(server.URL, "https://")
 		cfg := &config.Config{TiDB: config.DBStore{PdAddr: url}}
+		pdCli := &mockPDClient{Client: pdClient, leaderAddr: url}
 		targetInfoGetter := &TargetInfoGetterImpl{
-			cfg: cfg,
-			tls: tls,
+			cfg:   cfg,
+			tls:   tls,
+			pdCli: pdCli,
 		}
 		preInfoGetter := &PreImportInfoGetterImpl{
 			cfg:              cfg,
 			targetInfoGetter: targetInfoGetter,
 			srcStorage:       mockStore,
 		}
-		theCheckBuilder := NewPrecheckItemBuilder(cfg, []*mydump.MDDatabaseMeta{}, preInfoGetter, nil)
+		theCheckBuilder := NewPrecheckItemBuilder(cfg, []*mydump.MDDatabaseMeta{}, preInfoGetter, nil, nil)
 		rc := &Controller{
 			cfg:                 cfg,
 			tls:                 tls,
@@ -1193,6 +1200,7 @@ func (s *tableRestoreSuite) TestCheckClusterResource() {
 			checkTemplate:       template,
 			preInfoGetter:       preInfoGetter,
 			precheckItemBuilder: theCheckBuilder,
+			pdCli:               pdCli,
 		}
 		var sourceSize int64
 		err = rc.store.WalkDir(ctx, &storage.WalkOption{}, func(path string, size int64) error {
@@ -1229,6 +1237,15 @@ func (mockTaskMetaMgr) CheckTasksExclusively(ctx context.Context, action func(ta
 	return err
 }
 
+type mockPDClient struct {
+	pd.Client
+	leaderAddr string
+}
+
+func (m *mockPDClient) GetLeaderAddr() string {
+	return m.leaderAddr
+}
+
 func (s *tableRestoreSuite) TestCheckClusterRegion() {
 	type testCase struct {
 		stores         pdtypes.StoresInfo
@@ -1244,6 +1261,8 @@ func (s *tableRestoreSuite) TestCheckClusterRegion() {
 		}
 		return regions
 	}
+	_, _, pdClient, err := testutils.NewMockTiKV("", nil)
+	require.NoError(s.T(), err)
 
 	testCases := []testCase{
 		{
@@ -1319,10 +1338,12 @@ func (s *tableRestoreSuite) TestCheckClusterRegion() {
 
 		url := strings.TrimPrefix(server.URL, "https://")
 		cfg := &config.Config{TiDB: config.DBStore{PdAddr: url}}
+		pdCli := &mockPDClient{Client: pdClient, leaderAddr: url}
 
 		targetInfoGetter := &TargetInfoGetterImpl{
-			cfg: cfg,
-			tls: tls,
+			cfg:   cfg,
+			tls:   tls,
+			pdCli: pdCli,
 		}
 		dbMetas := []*mydump.MDDatabaseMeta{}
 		preInfoGetter := &PreImportInfoGetterImpl{
@@ -1330,7 +1351,7 @@ func (s *tableRestoreSuite) TestCheckClusterRegion() {
 			targetInfoGetter: targetInfoGetter,
 			dbMetas:          dbMetas,
 		}
-		theCheckBuilder := NewPrecheckItemBuilder(cfg, dbMetas, preInfoGetter, checkpoints.NewNullCheckpointsDB())
+		theCheckBuilder := NewPrecheckItemBuilder(cfg, dbMetas, preInfoGetter, checkpoints.NewNullCheckpointsDB(), nil)
 		rc := &Controller{
 			cfg:                 cfg,
 			tls:                 tls,
@@ -1339,6 +1360,7 @@ func (s *tableRestoreSuite) TestCheckClusterRegion() {
 			preInfoGetter:       preInfoGetter,
 			dbInfos:             make(map[string]*checkpoints.TidbDBInfo),
 			precheckItemBuilder: theCheckBuilder,
+			pdCli:               pdCli,
 		}
 
 		preInfoGetter.dbInfosCache = rc.dbInfos
@@ -1425,7 +1447,7 @@ func (s *tableRestoreSuite) TestCheckHasLargeCSV() {
 	for _, ca := range cases {
 		template := NewSimpleTemplate()
 		cfg := &config.Config{Mydumper: config.MydumperRuntime{StrictFormat: ca.strictFormat}}
-		theCheckBuilder := NewPrecheckItemBuilder(cfg, ca.dbMetas, nil, nil)
+		theCheckBuilder := NewPrecheckItemBuilder(cfg, ca.dbMetas, nil, nil, nil)
 		rc := &Controller{
 			cfg:                 cfg,
 			checkTemplate:       template,

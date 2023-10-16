@@ -13,12 +13,12 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"github.com/pingcap/errors"
 	. "github.com/pingcap/tidb/br/pkg/lightning/checkpoints"
-	tmysql "github.com/pingcap/tidb/errno"
-	"github.com/pingcap/tidb/kv"
-	"github.com/pingcap/tidb/parser/model"
-	pmysql "github.com/pingcap/tidb/parser/mysql"
-	"github.com/pingcap/tidb/types"
-	"github.com/pingcap/tidb/util"
+	tmysql "github.com/pingcap/tidb/pkg/errno"
+	"github.com/pingcap/tidb/pkg/kv"
+	"github.com/pingcap/tidb/pkg/parser/model"
+	pmysql "github.com/pingcap/tidb/pkg/parser/mysql"
+	"github.com/pingcap/tidb/pkg/types"
+	"github.com/pingcap/tidb/pkg/util"
 	"github.com/pingcap/tipb/go-tipb"
 	"github.com/stretchr/testify/require"
 	"github.com/tikv/client-go/v2/oracle"
@@ -48,6 +48,7 @@ func TestDoChecksum(t *testing.T) {
 	mock.ExpectExec("\\QUPDATE mysql.tidb SET VARIABLE_VALUE = ? WHERE VARIABLE_NAME = 'tikv_gc_life_time'\\E").
 		WithArgs("10m").
 		WillReturnResult(sqlmock.NewResult(2, 1))
+	mock.ExpectClose()
 	mock.ExpectClose()
 
 	manager := NewTiDBChecksumExecutor(db)
@@ -228,6 +229,7 @@ func TestDoChecksumWithErrorAndLongOriginalLifetime(t *testing.T) {
 		WithArgs("300h").
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectClose()
+	mock.ExpectClose()
 
 	manager := NewTiDBChecksumExecutor(db)
 	_, err = manager.Checksum(context.Background(), &TidbTableInfo{DB: "test", Name: "t"})
@@ -295,7 +297,7 @@ func (c *testPDClient) currentSafePoint() uint64 {
 func (c *testPDClient) GetTS(ctx context.Context) (int64, int64, error) {
 	physicalTS := time.Now().UnixMilli()
 	if c.leaderChanging && physicalTS%2 == 0 {
-		return 0, 0, errs.ErrClientTSOStreamClosed
+		return 0, 0, errors.WithStack(errs.ErrClientTSOStreamClosed)
 	}
 	logicalTS := oracle.ExtractLogical(c.logicalTSCounter.Inc())
 	return physicalTS, logicalTS, nil

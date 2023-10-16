@@ -26,7 +26,7 @@ import (
 	"github.com/pingcap/tidb/br/pkg/lightning/log"
 	"github.com/pingcap/tidb/br/pkg/lightning/worker"
 	"github.com/pingcap/tidb/br/pkg/storage"
-	"github.com/pingcap/tidb/util/mathutil"
+	"github.com/pingcap/tidb/pkg/util/mathutil"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
@@ -410,7 +410,7 @@ func SplitLargeCSV(
 	var columns []string
 	var prevRowIdxMax int64
 	if cfg.CSV.Header {
-		r, err := cfg.Store.Open(ctx, dataFile.FileMeta.Path)
+		r, err := cfg.Store.Open(ctx, dataFile.FileMeta.Path, nil)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -440,7 +440,7 @@ func SplitLargeCSV(
 		curRowsCnt := (endOffset - startOffset) / divisor
 		rowIDMax := prevRowIdxMax + curRowsCnt
 		if endOffset != dataFile.FileMeta.FileSize {
-			r, err := cfg.Store.Open(ctx, dataFile.FileMeta.Path)
+			r, err := cfg.Store.Open(ctx, dataFile.FileMeta.Path, nil)
 			if err != nil {
 				return nil, nil, err
 			}

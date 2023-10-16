@@ -144,6 +144,7 @@ nogo(
                "@org_golang_x_tools//go/analysis/passes/unusedresult:go_default_library",
                "//build/linter/asciicheck",
                "//build/linter/bodyclose",
+               "//build/linter/bootstrap",
                "//build/linter/deferrecover",
                "//build/linter/durationcheck",
                "//build/linter/etcdconfig",
@@ -161,6 +162,7 @@ nogo(
                "//build/linter/predeclared",
                "//build/linter/unconvert",
                "//build/linter/rowserrcheck",
+               "//build/linter/toomanytests",
            ] + staticcheck_analyzers(STATICHECK_ANALYZERS) +
            select({
                "//build:with_nogo": [
