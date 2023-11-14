@@ -18,7 +18,7 @@ jobs:
       with:
         go-version-file: 'go.mod'
     - name: Test # only test a simple pkg.
-      run: go test -covermode=atomic -coverprofile=coverage.out -v ./pkg/config/... ./pkg/metrics/...
+      run: go test -covermode=atomic -coverprofile=coverage.out -v ./br/pkg/config/...
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
