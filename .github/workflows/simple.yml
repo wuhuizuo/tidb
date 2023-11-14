@@ -13,15 +13,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Go
-      uses: actions/setup-go@v3
+    - uses: actions/checkout@v4
+    - uses: actions/setup-go@v4
       with:
-        go-version: "1.20"
-
+        go-version-file: 'go.mod'
     - name: Test # only test a simple pkg.
-      run: go test -covermode=atomic -coverprofile=coverage.out -v ./config/... ./metrics/...
+      run: go test -covermode=atomic -coverprofile=coverage.out -v ./pkg/config/... ./pkg/metrics/...
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
