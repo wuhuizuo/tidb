@@ -214,3 +214,7 @@ func (c *EBSBasedBRMeta) SetVolumeAZs(idMap map[string]string) {
 		}
 	}
 }
+
+func hello() {
+	panic("should not met")
+}
