@@ -37,11 +37,8 @@ import (
 	"github.com/pingcap/tidb/pkg/testkit/testdata"
 	contextutil "github.com/pingcap/tidb/pkg/util/context"
 	"github.com/pingcap/tidb/pkg/util/hint"
-<<<<<<< HEAD
-=======
 	"github.com/pingcap/tidb/pkg/util/mock"
 	"github.com/pingcap/tidb/pkg/util/size"
->>>>>>> d7169b2a324 (planner: PointGet will not skip the reuse chunk with enough total memory (#63921))
 	"github.com/stretchr/testify/require"
 )
 

@@ -1197,15 +1197,9 @@ func checkOverlongColType(sctx base.PlanContext, plan base.PhysicalPlan) (skipRe
 		return false, false
 	}
 	switch plan.(type) {
-<<<<<<< HEAD
 	case *PhysicalTableReader, *PhysicalIndexReader,
 		*PhysicalIndexLookUpReader, *PhysicalIndexMergeReader, *PointGetPlan:
-		if existsOverlongType(plan.Schema()) {
-=======
-	case *physicalop.PhysicalTableReader, *physicalop.PhysicalIndexReader,
-		*physicalop.PhysicalIndexLookUpReader, *physicalop.PhysicalIndexMergeReader:
 		if existsOverlongType(plan.Schema(), false) {
->>>>>>> d7169b2a324 (planner: PointGet will not skip the reuse chunk with enough total memory (#63921))
 			sctx.GetSessionVars().ClearAlloc(nil, false)
 			return true, false
 		}
